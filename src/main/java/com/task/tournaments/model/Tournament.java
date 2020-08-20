@@ -1,12 +1,16 @@
 package com.task.tournaments.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "tournaments")
 public class Tournament {
     @Id
@@ -16,9 +20,12 @@ public class Tournament {
     private String title;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<Participant> participants;
+    private List<Participant> participants;
 
     @OneToMany
-    List<Match> matches;
+    private List<Match> matches;
 
+    public Tournament(String title) {
+        this.title = title;
+    }
 }
