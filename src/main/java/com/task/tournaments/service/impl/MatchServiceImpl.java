@@ -47,7 +47,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public void deleteBy(Long id) {
+    public void deleteById(Long id) {
         Match matchToDelete = matchRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Match with id " + id + " not found!"));
         matchRepository.delete(matchToDelete);

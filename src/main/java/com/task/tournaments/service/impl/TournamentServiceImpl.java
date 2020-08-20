@@ -44,9 +44,12 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public void deleteBy(Long id) {
-        Tournament tournamentToDelete = tournamentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Tournament with id " + id + " not found!"));
-        tournamentRepository.delete(tournamentToDelete);
+    public void deleteById(Long id) {
+        Optional<Tournament> tournamentToDelete = tournamentRepository.findById(id);
+        if (tournamentToDelete.isPresent()) {
+            tournamentRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException("Tournament with id " + id + " not found!");
+        }
     }
 }

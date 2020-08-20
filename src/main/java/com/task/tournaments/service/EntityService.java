@@ -9,5 +9,5 @@ public interface EntityService<T> {
 
     T createOrUpdate(T t);
 
-    void deleteBy(Long id);
+    void deleteById(Long id);
 }

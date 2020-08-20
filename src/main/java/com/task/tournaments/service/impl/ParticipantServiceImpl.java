@@ -44,7 +44,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
-    public void deleteBy(Long id) {
+    public void deleteById(Long id) {
         Participant participantToDelete = participantRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Participant with id " + id + " not found!"));
         participantRepository.delete(participantToDelete);
