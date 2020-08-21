@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -19,13 +20,19 @@ public class Tournament {
 
     private String title;
 
+    private Integer participantsNumber;
+
+    private Integer matchesNumber;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Participant> participants;
 
     @OneToMany
     private List<Match> matches;
 
-    public Tournament(String title) {
+    public Tournament(String title, Integer participantsNumber, Integer matchesNumber) {
         this.title = title;
+        this.participantsNumber = participantsNumber;
+        this.matchesNumber = matchesNumber;
     }
 }
