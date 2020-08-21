@@ -45,6 +45,9 @@ public class MatchRestController {
         return new ResponseEntity<>(match, HttpStatus.CREATED);
     }
 
+    /**
+     * Method updateMatch(@PathVariable Long id, @RequestBody Match match) can be used for Summarizing results in match
+     */
     @PutMapping("/edit/{id}")
     public ResponseEntity<MatchOutputDTO> updateMatch(@PathVariable Long id, @RequestBody Match match) {
         Match matchDB = matchService.getById(id);
