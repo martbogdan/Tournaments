@@ -3,6 +3,7 @@ package com.task.tournaments.rest.v1;
 import com.task.tournaments.dto.TournamentInputDTO;
 import com.task.tournaments.dto.TournamentOutputDTO;
 import com.task.tournaments.model.Tournament;
+import com.task.tournaments.service.MatchService;
 import com.task.tournaments.service.TournamentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -18,10 +19,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/tournament")
 public class TournamentRestController {
     private final TournamentService tournamentService;
+    private final MatchService matchService;
 
     @Autowired
-    public TournamentRestController(TournamentService tournamentService) {
+    public TournamentRestController(TournamentService tournamentService, MatchService matchService) {
         this.tournamentService = tournamentService;
+        this.matchService = matchService;
     }
 
     @GetMapping("/all")
@@ -58,5 +61,14 @@ public class TournamentRestController {
     @DeleteMapping("/delete/{id}")
     public void deleteTournament(@PathVariable Long id) {
         tournamentService.deleteById(id);
+    }
+
+    @GetMapping("/start/{id}")
+    public ResponseEntity<TournamentOutputDTO> startTournament(@PathVariable Long id) {
+        Tournament tournamentDB = tournamentService.getById(id);
+        tournamentDB.setMatches(matchService.generateMatches(tournamentDB.getParticipants()));
+        tournamentDB.setMatchesNumber(tournamentDB.getMatchesNumber() + tournamentDB.getMatches().size());
+        TournamentOutputDTO outputDTO = TournamentOutputDTO.of(tournamentService.createOrUpdate(tournamentDB));
+        return new ResponseEntity<>(outputDTO, HttpStatus.CREATED);
     }
 }

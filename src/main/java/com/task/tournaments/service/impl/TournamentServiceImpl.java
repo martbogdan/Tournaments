@@ -46,7 +46,7 @@ public class TournamentServiceImpl implements TournamentService {
         }
         if (tournament.getParticipantsNumber() == null || tournament.getParticipantsNumber() < 8) {
             tournament.setParticipantsNumber(8);
-            tournament.setMatchesNumber(8);
+            tournament.setMatchesNumber(0);
         } else {
             if (tournament.getParticipantsNumber() % 8 != 0) {
                 int maxNumber = tournament.getParticipantsNumber();
@@ -54,7 +54,7 @@ public class TournamentServiceImpl implements TournamentService {
                     maxNumber++;
                 }
                 tournament.setParticipantsNumber(maxNumber);
-                tournament.setMatchesNumber(maxNumber);
+                tournament.setMatchesNumber(0);
             }
         }
         return tournamentRepository.save(tournament);
