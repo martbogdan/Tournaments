@@ -16,6 +16,8 @@ import java.util.Optional;
 
 @Service
 public class MatchServiceImpl implements MatchService {
+    private static final long MATCH_DURATION = 5;
+
     private final MatchRepository matchRepository;
 
     @Autowired
@@ -64,10 +66,21 @@ public class MatchServiceImpl implements MatchService {
         for (int i = 0; i<participants.size()-1; i=i+2) {
             matches.add(matchRepository.save(new Match(
                     LocalDateTime.now(),
-                    LocalDateTime.now().plusMinutes(30),
+                    LocalDateTime.now().plusMinutes(MATCH_DURATION),
                     participants.get(i),
                     participants.get(i+1), 0, 0)));
         }
         return matches;
     }
+
+    @Override
+    public boolean isAllMatchesFinish(List<Match> matches) {
+        for (Match m : matches) {
+            if (!LocalDateTime.now().isAfter(m.getFinishTime())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

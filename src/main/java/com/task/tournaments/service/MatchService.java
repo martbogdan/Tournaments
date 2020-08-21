@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface MatchService extends EntityService<Match> {
     List<Match> generateMatches(List<Participant> participants);
+    boolean isAllMatchesFinish(List<Match> matches);
 }

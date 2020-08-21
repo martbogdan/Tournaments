@@ -1,6 +1,7 @@
 package com.task.tournaments.service.impl;
 
 import com.task.tournaments.exceptions.EntityNotFoundException;
+import com.task.tournaments.model.Match;
 import com.task.tournaments.model.Participant;
 import com.task.tournaments.model.Tournament;
 import com.task.tournaments.repository.ParticipantRepository;
@@ -9,6 +10,7 @@ import com.task.tournaments.service.ParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,5 +74,18 @@ public class ParticipantServiceImpl implements ParticipantService {
         Tournament tournamentDB = tournamentRepository.getOne(tournament.getId());
         tournamentDB.getParticipants().remove(participantDB);
         return tournamentRepository.save(tournamentDB) != null;
+    }
+
+    @Override
+    public List<Participant> getLosers(List<Match> matches) {
+        List<Participant> losers = new ArrayList<>();
+        for (Match match : matches) {
+            if (match.getScore1() > match.getScore2()) {
+                losers.add(match.getParticipant2());
+            } else if (match.getScore1() < match.getScore2()) {
+                losers.add(match.getParticipant1());
+            }
+        }
+        return losers;
     }
 }

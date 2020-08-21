@@ -2,8 +2,10 @@ package com.task.tournaments.rest.v1;
 
 import com.task.tournaments.dto.TournamentInputDTO;
 import com.task.tournaments.dto.TournamentOutputDTO;
+import com.task.tournaments.model.Participant;
 import com.task.tournaments.model.Tournament;
 import com.task.tournaments.service.MatchService;
+import com.task.tournaments.service.ParticipantService;
 import com.task.tournaments.service.TournamentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -20,11 +22,13 @@ import java.util.stream.Collectors;
 public class TournamentRestController {
     private final TournamentService tournamentService;
     private final MatchService matchService;
+    private final ParticipantService participantService;
 
     @Autowired
-    public TournamentRestController(TournamentService tournamentService, MatchService matchService) {
+    public TournamentRestController(TournamentService tournamentService, MatchService matchService, ParticipantService participantService) {
         this.tournamentService = tournamentService;
         this.matchService = matchService;
+        this.participantService = participantService;
     }
 
     @GetMapping("/all")
@@ -66,8 +70,19 @@ public class TournamentRestController {
     @GetMapping("/start/{id}")
     public ResponseEntity<TournamentOutputDTO> startTournament(@PathVariable Long id) {
         Tournament tournamentDB = tournamentService.getById(id);
-        tournamentDB.setMatches(matchService.generateMatches(tournamentDB.getParticipants()));
-        tournamentDB.setMatchesNumber(tournamentDB.getMatchesNumber() + tournamentDB.getMatches().size());
+
+        if (tournamentDB.getMatches().size() > 0) {
+            if (matchService.isAllMatchesFinish(tournamentDB.getMatches())) {
+                List<Participant> losers = participantService.getLosers(tournamentDB.getMatches());
+                losers.forEach(participant -> participantService.removeParticipantFromTournament(participant, tournamentDB));
+                tournamentDB.setMatches(matchService.generateMatches(tournamentDB.getParticipants()));
+                tournamentDB.setMatchesNumber(tournamentDB.getMatchesNumber() + tournamentDB.getMatches().size());
+            }
+        } else {
+            tournamentDB.setMatches(matchService.generateMatches(tournamentDB.getParticipants()));
+            tournamentDB.setMatchesNumber(tournamentDB.getMatchesNumber() + tournamentDB.getMatches().size());
+        }
+
         TournamentOutputDTO outputDTO = TournamentOutputDTO.of(tournamentService.createOrUpdate(tournamentDB));
         return new ResponseEntity<>(outputDTO, HttpStatus.CREATED);
     }
