@@ -68,4 +68,11 @@ public class ParticipantRestController {
         TournamentOutputDTO outputDTO = TournamentOutputDTO.of(tournamentService.getById(tournament_id));
         return new ResponseEntity<>(outputDTO, HttpStatus.OK);
     }
+
+    @GetMapping("/{participant_id}/remove/{tournament_id}")
+    public ResponseEntity<TournamentOutputDTO> removeParticipantFromTournament(@PathVariable Long participant_id, @PathVariable Long tournament_id) {
+        participantService.removeParticipantFromTournament(participantService.getById(participant_id), tournamentService.getById(tournament_id));
+        TournamentOutputDTO outputDTO = TournamentOutputDTO.of(tournamentService.getById(tournament_id));
+        return new ResponseEntity<>(outputDTO, HttpStatus.OK);
+    }
 }
