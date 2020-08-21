@@ -36,8 +36,25 @@ public class TournamentServiceImpl implements TournamentService {
             Optional<Tournament> tournamentOptional = tournamentRepository.findById(tournament.getId());
             if (tournamentOptional.isPresent()) {
                 Tournament newTournament = tournamentOptional.get();
-                newTournament.setTitle(newTournament.getTitle());
+                newTournament.setTitle(tournament.getTitle());
+                newTournament.setParticipantsNumber(tournament.getParticipantsNumber() != null ? tournament.getParticipantsNumber() : newTournament.getParticipantsNumber());
+                newTournament.setMatchesNumber(tournament.getMatchesNumber() != null ? tournament.getMatchesNumber() : newTournament.getMatchesNumber());
+                newTournament.setParticipants(tournament.getParticipants() != null ? tournament.getParticipants() : newTournament.getParticipants());
+                newTournament.setMatches(tournament.getMatches() != null ? tournament.getMatches() : newTournament.getMatches());
                 return tournamentRepository.save(newTournament);
+            }
+        }
+        if (tournament.getParticipantsNumber() == null || tournament.getParticipantsNumber() < 8) {
+            tournament.setParticipantsNumber(8);
+            tournament.setMatchesNumber(8);
+        } else {
+            if (tournament.getParticipantsNumber() % 8 != 0) {
+                int maxNumber = tournament.getParticipantsNumber();
+                while (maxNumber % 8 != 0) {
+                    maxNumber++;
+                }
+                tournament.setParticipantsNumber(maxNumber);
+                tournament.setMatchesNumber(maxNumber);
             }
         }
         return tournamentRepository.save(tournament);

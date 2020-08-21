@@ -15,10 +15,18 @@ import java.util.List;
 public class TournamentOutputDTO {
     private Long id;
     private String title;
+    private Integer participantsNumber;
+    private Integer matchesNumber;
     List<Participant> participants;
     List<Match> matches;
 
     public static TournamentOutputDTO of(Tournament tournament) {
-        return new TournamentOutputDTO(tournament.getId(), tournament.getTitle(), tournament.getParticipants(), tournament.getMatches());
+        return new TournamentOutputDTO(
+                tournament.getId(),
+                tournament.getTitle(),
+                tournament.getParticipantsNumber(),
+                tournament.getMatchesNumber(),
+                tournament.getParticipants(),
+                tournament.getMatches());
     }
 }
