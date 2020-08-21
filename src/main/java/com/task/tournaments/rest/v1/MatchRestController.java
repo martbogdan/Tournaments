@@ -50,6 +50,8 @@ public class MatchRestController {
         Match matchDB = matchService.getById(id);
         matchDB.setStartTime(match.getStartTime());
         matchDB.setFinishTime(match.getFinishTime());
+        matchDB.setScore1(match.getScore1());
+        matchDB.setScore2(match.getScore2());
         MatchOutputDTO outputDTO = MatchOutputDTO.of(matchService.createOrUpdate(matchDB));
         return new ResponseEntity<>(outputDTO, HttpStatus.CREATED);
     }
