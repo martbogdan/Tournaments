@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Data
@@ -20,11 +22,10 @@ public class Match {
     private LocalDateTime startTime;
     private LocalDateTime finishTime;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "participant_id")
-    private Participant participant;
+//    @ManyToMany
+//    private List<Participant> participants;
 
-    private Integer scores;
+
 
     public Match(LocalDateTime startTime, LocalDateTime finishTime) {
         this.startTime = startTime;

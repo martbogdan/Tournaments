@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -15,11 +17,9 @@ public class MatchOutputDTO {
     private Long id;
     private LocalDateTime startTime;
     private LocalDateTime finishTime;
-    private Participant participant;
-    private Integer scores;
 
     public static MatchOutputDTO of(Match match) {
-        return new MatchOutputDTO(match.getId(), match.getStartTime(), match.getFinishTime(), match.getParticipant(), match.getScores());
+        return new MatchOutputDTO(match.getId(), match.getStartTime(), match.getFinishTime());
     }
 
 }

@@ -38,8 +38,6 @@ public class MatchServiceImpl implements MatchService {
                 Match newMatch = matchOptional.get();
                 newMatch.setStartTime(match.getStartTime());
                 newMatch.setFinishTime(match.getFinishTime());
-                newMatch.setParticipant(match.getParticipant());
-                newMatch.setScores(match.getScores());
                 return matchRepository.save(newMatch);
             }
         }

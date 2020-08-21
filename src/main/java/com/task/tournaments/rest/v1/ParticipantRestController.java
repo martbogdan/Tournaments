@@ -54,7 +54,7 @@ public class ParticipantRestController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteTournament(@PathVariable Long id) {
+    public void deleteParticipant(@PathVariable Long id) {
         participantService.deleteById(id);
     }
 }
