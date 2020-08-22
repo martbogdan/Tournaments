@@ -4,6 +4,9 @@ import com.task.tournaments.dto.MatchInputDTO;
 import com.task.tournaments.dto.MatchOutputDTO;
 import com.task.tournaments.model.Match;
 import com.task.tournaments.service.MatchService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Api(value = "Match")
 @RepositoryRestController
 @RequestMapping("/api/v1/match")
 public class MatchRestController {
@@ -24,6 +28,7 @@ public class MatchRestController {
         this.matchService = matchService;
     }
 
+    @ApiOperation(value = "Get all Matches", response = ResponseEntity.class)
     @GetMapping("/all")
     public ResponseEntity<List<MatchOutputDTO>> getAllMatches() {
         List<MatchOutputDTO> match = matchService.getAll()
@@ -33,14 +38,20 @@ public class MatchRestController {
         return new ResponseEntity<>(match, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get Match by id", response = ResponseEntity.class)
     @GetMapping("/{id}")
-    public ResponseEntity<MatchOutputDTO> getMatchById(@PathVariable Long id) {
+    public ResponseEntity<MatchOutputDTO> getMatchById(
+            @ApiParam(value = "Match param id", example = "1")
+            @PathVariable Long id) {
         MatchOutputDTO match = MatchOutputDTO.of(matchService.getById(id));
         return new ResponseEntity<>(match, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Create Match", response = ResponseEntity.class)
     @PostMapping
-    public ResponseEntity<MatchOutputDTO> createNewMatch(@Validated @RequestBody MatchInputDTO matchInput) {
+    public ResponseEntity<MatchOutputDTO> createNewMatch(
+            @ApiParam(value = "Request body Match", required = true, name = "Match input")
+            @Validated @RequestBody MatchInputDTO matchInput) {
         MatchOutputDTO match = MatchOutputDTO.of(matchService.createOrUpdate(MatchInputDTO.of(matchInput)));
         return new ResponseEntity<>(match, HttpStatus.CREATED);
     }
@@ -48,8 +59,13 @@ public class MatchRestController {
     /**
      * Method updateMatch(@PathVariable Long id, @RequestBody Match match) can be used for Summarizing results in match
      */
+    @ApiOperation(value = "Update/('Summarize results') Match by id", response = ResponseEntity.class)
     @PutMapping("/edit/{id}")
-    public ResponseEntity<MatchOutputDTO> updateMatch(@PathVariable Long id, @RequestBody Match match) {
+    public ResponseEntity<MatchOutputDTO> updateMatch(
+            @ApiParam(value = "Match param id", example = "1")
+            @PathVariable Long id,
+            @ApiParam(value = "Request body Match", required = true, name = "Match input")
+            @RequestBody Match match) {
         Match matchDB = matchService.getById(id);
         matchDB.setStartTime(match.getStartTime());
         matchDB.setFinishTime(match.getFinishTime());
@@ -59,8 +75,12 @@ public class MatchRestController {
         return new ResponseEntity<>(outputDTO, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "Delete Match by id", response = ResponseEntity.class)
     @DeleteMapping("/delete/{id}")
-    public void deleteMatch(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteMatch(
+            @ApiParam(value = "Match param id", example = "1")
+            @PathVariable Long id) {
         matchService.deleteById(id);
     }
 }

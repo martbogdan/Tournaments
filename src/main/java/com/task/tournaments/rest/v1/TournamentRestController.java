@@ -7,6 +7,9 @@ import com.task.tournaments.model.Tournament;
 import com.task.tournaments.service.MatchService;
 import com.task.tournaments.service.ParticipantService;
 import com.task.tournaments.service.TournamentService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Api(value = "Tournament")
 @RepositoryRestController
 @RequestMapping("/api/v1/tournament")
 public class TournamentRestController {
@@ -31,6 +35,7 @@ public class TournamentRestController {
         this.participantService = participantService;
     }
 
+    @ApiOperation(value = "Get all Tournaments", response = ResponseEntity.class)
     @GetMapping("/all")
     public ResponseEntity<List<TournamentOutputDTO>> getAllTournaments() {
         List<TournamentOutputDTO> tournaments = tournamentService.getAll()
@@ -40,20 +45,32 @@ public class TournamentRestController {
         return new ResponseEntity<>(tournaments, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get Tournament by id", response = ResponseEntity.class)
     @GetMapping("/{id}")
-    public ResponseEntity<TournamentOutputDTO> getTournamentById(@PathVariable Long id) {
+    public ResponseEntity<TournamentOutputDTO> getTournamentById(
+            @ApiParam(value = "Tournament param id", example = "1")
+            @PathVariable Long id) {
         TournamentOutputDTO tournament = TournamentOutputDTO.of(tournamentService.getById(id));
         return new ResponseEntity<>(tournament, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Create Tournament", response = ResponseEntity.class)
     @PostMapping
-    public ResponseEntity<TournamentOutputDTO> createNewTournament(@Validated @RequestBody TournamentInputDTO tournamentInput) {
+    public ResponseEntity<TournamentOutputDTO> createNewTournament(
+            @ApiParam(value = "Request body Tournament ", required = true, name = "Tournament input")
+            @Validated
+            @RequestBody TournamentInputDTO tournamentInput) {
         TournamentOutputDTO tournament = TournamentOutputDTO.of(tournamentService.createOrUpdate(TournamentInputDTO.of(tournamentInput)));
         return new ResponseEntity<>(tournament, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "Update Tournament", response = ResponseEntity.class)
     @PutMapping("/edit/{id}")
-    public ResponseEntity<TournamentOutputDTO> updateTournament(@PathVariable Long id, @RequestBody Tournament tournament) {
+    public ResponseEntity<TournamentOutputDTO> updateTournament(
+            @ApiParam(value = "Tournament param id", example = "1")
+            @PathVariable Long id,
+            @ApiParam(value = "Request body Tournament ", required = true, name = "Tournament")
+            @RequestBody Tournament tournament) {
         Tournament tournamentDB = tournamentService.getById(id);
         tournamentDB.setTitle(tournament.getTitle());
         tournamentDB.setParticipants(tournament.getParticipants());
@@ -62,13 +79,18 @@ public class TournamentRestController {
         return new ResponseEntity<>(outputDTO, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "Delete Tournament by id", response = ResponseEntity.class)
     @DeleteMapping("/delete/{id}")
-    public void deleteTournament(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteTournament(
+            @ApiParam(value = "Tournament param id", example = "1") @PathVariable Long id) {
         tournamentService.deleteById(id);
     }
 
+    @ApiOperation(value = "Starting Tournament by id", response = ResponseEntity.class)
     @GetMapping("/start/{id}")
-    public ResponseEntity<TournamentOutputDTO> startTournament(@PathVariable Long id) {
+    public ResponseEntity<TournamentOutputDTO> startTournament(
+            @ApiParam(value = "Tournament param id", example = "1") @PathVariable Long id) {
         Tournament tournamentDB = tournamentService.getById(id);
 
         if (tournamentDB.getMatches().size() > 0) {
