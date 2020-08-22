@@ -63,12 +63,12 @@ public class MatchServiceImpl implements MatchService {
     public List<Match> generateMatches(List<Participant> participants) {
         List<Match> matches = new ArrayList<>();
         Collections.shuffle(participants);
-        for (int i = 0; i<participants.size()-1; i=i+2) {
+        for (int i = 0; i < participants.size() - 1; i = i + 2) {
             matches.add(matchRepository.save(new Match(
                     LocalDateTime.now(),
                     LocalDateTime.now().plusMinutes(MATCH_DURATION),
                     participants.get(i),
-                    participants.get(i+1), 0, 0)));
+                    participants.get(i + 1), 0, 0)));
         }
         return matches;
     }
